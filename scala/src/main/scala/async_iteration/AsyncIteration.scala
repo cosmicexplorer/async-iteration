@@ -1,12 +1,17 @@
 package async_iteration
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+case class IterationState[+T](
+  curCollection: Iterable[T],
+  nextRequest: () => Future[Iterable[T]]
+)
 
 // purely functional!
 sealed trait AsyncIterator[+T] {
   // consider parameterizing the future type
   def next: Future[AsyncIterator[T]]
-  def value: T
 }
 
 class EndOfAsyncIterationException extends Exception
@@ -22,8 +27,13 @@ object End extends AsyncIterator[Nothing] {
   override def value: Nothing = throw new EndOfAsyncIterationException
 }
 
+object AsyncIterator {
+  def fromSync[T](it: Iterator[T]): AsyncIterator[T] = {
+    val next = it.next
+    if (it.hasNext) Intermediate(Future(fromSync(it)), next) else End
+  }
+}
+
 trait AsyncIterable[+T] {
   def iterator: AsyncIterator[T]
 }
-
-trait 
