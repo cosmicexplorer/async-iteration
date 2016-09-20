@@ -7,7 +7,7 @@ lazy val root = (project in file(".")).
       "-deprecation", "-unchecked", "-feature", "-encoding", "utf8",
       "-Yno-adapted-args", "-Ywarn-dead-code", "-Ywarn-numeric-widen",
       "-Ywarn-value-discard", "-Ywarn-infer-any", "-Ywarn-unused-import",
-      "-Xlint"
+      "-Xlint", "-language:higherKinds"
     ),
     libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
   )
